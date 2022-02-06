@@ -56,7 +56,4 @@ http {
     location ~ ^/kpop/(.*)$ {
       proxy_pass https://kpop.dokku.facu.tk/$1;
     }
-
-
-  }
 }
