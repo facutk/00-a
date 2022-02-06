@@ -1,9 +1,3 @@
-{{ range $port_map := .PROXY_PORT_MAP | split " " }}
-{{ $port_map_list := $port_map | split ":" }}
-{{ $scheme := index $port_map_list 0 }}
-{{ $listen_port := index $port_map_list 1 }}
-{{ $upstream_port := index $port_map_list 2 }}
-
 worker_processes 1;
 error_log stderr;
 pid nginx.pid;
@@ -17,6 +11,7 @@ http {
   types_hash_max_size 2048;
   include mime.types;
   charset UTF-8;
+
   server {
     listen {{ $.PORT }};
     server_name  _;
@@ -29,23 +24,17 @@ http {
     index index.html;
     port_in_redirect off;
 
-    location ~ ^/kpop/(.*)$ {
-      proxy_pass http://kpop.dokku.facu.tk/$1;
-    }
-
     location / {
       try_files $uri $uri/ =404;
     }
   }
 
   server {
-    listen      {{ if $.NGINX_BIND_ADDRESS_IP4 }}{{ $.NGINX_BIND_ADDRESS_IP4 }}:{{end}}{{ $listen_port }} ssl;
-    {{ if $.SSL_SERVER_NAME }}server_name {{ $.SSL_SERVER_NAME }}; {{ end }}
-    {{ if $.NOSSL_SERVER_NAME }}server_name {{ $.NOSSL_SERVER_NAME }}; {{ end }}
+    listen {{ $.DOKKU_PROXY_SSL_PORT }} ssl;
+    server_name  _;
 
     ssl_certificate           {{ $.APP_SSL_PATH }}/server.crt;
     ssl_certificate_key       {{ $.APP_SSL_PATH }}/server.key;
-    ssl_protocols             TLSv1.2 {{ if eq $.TLS13_SUPPORTED "true" }}TLSv1.3{{ end }};
     ssl_prefer_server_ciphers off;
 
     location ~ ^/kpop/(.*)$ {
