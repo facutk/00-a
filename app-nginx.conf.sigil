@@ -17,7 +17,6 @@ http {
 
     ssl_certificate           {{ $.APP_SSL_PATH }}/server.crt;
     ssl_certificate_key       {{ $.APP_SSL_PATH }}/server.key;
-    ssl_protocols             TLSv1.2 {{ if eq $.TLS13_SUPPORTED "true" }}TLSv1.3{{ end }};
     ssl_prefer_server_ciphers off;
 
     {{ if ne $.NGINX_ROOT "" }}
