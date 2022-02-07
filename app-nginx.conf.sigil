@@ -24,21 +24,12 @@ http {
     index index.html;
     port_in_redirect off;
 
+    location ~ ^/kpop/(.*)$ {
+      proxy_pass http://kpop.dokku.facu.tk/$1;
+    }
+
     location / {
       try_files $uri $uri/ =404;
-    }
-  }
-
-  server {
-    listen {{ $.DOKKU_PROXY_SSL_PORT }} ssl;
-    server_name  _;
-
-    ssl_certificate           {{ $.APP_SSL_PATH }}/server.crt;
-    ssl_certificate_key       {{ $.APP_SSL_PATH }}/server.key;
-    ssl_prefer_server_ciphers off;
-
-    location ~ ^/kpop/(.*)$ {
-      proxy_pass https://kpop.dokku.facu.tk/$1;
     }
   }
 }
