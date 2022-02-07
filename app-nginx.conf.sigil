@@ -25,7 +25,7 @@ http {
     port_in_redirect off;
 
     location ~ ^/kpop/(.*)$ {
-      proxy_pass http://kpop.dokku.facu.tk/$1;
+      proxy_pass http://172.17.0.3:5000/$1;
     }
 
     location / {
